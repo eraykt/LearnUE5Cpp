@@ -56,6 +56,9 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	virtual void BeginPlay() override;
+
+	// Health
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
 
@@ -64,5 +67,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
 	void PrintHealth(const FString& Message);
+
+	// Trace
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace")
+	float TraceDistance;
 };
 

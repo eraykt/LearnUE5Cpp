@@ -51,7 +51,11 @@ ALearnUE5CppCharacter::ALearnUE5CppCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
+	// Health
 	Health = 100.0f;
+
+	// Trace
+	TraceDistance = 1000.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -117,17 +121,17 @@ void ALearnUE5CppCharacter::MoveRight(float Value)
 	}
 }
 
-void ALearnUE5CppCharacter::HandleHealth(float Value)
+void ALearnUE5CppCharacter::HandleHealth(const float Value)
 {
-	float newHealth = Health + Value;
+	const float NewHealth = Health + Value;
 
-	if (newHealth >= 100.0f)
+	if (NewHealth >= 100.0f)
 	{
 		Health = 100.0f;
 		GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green,TEXT("Health is full"));
 	}
 
-	else if (newHealth <= 0.0f)
+	else if (NewHealth <= 0.0f)
 	{
 		Health = 0.0f;
 		PrintHealth("You died!");
@@ -135,7 +139,23 @@ void ALearnUE5CppCharacter::HandleHealth(float Value)
 
 	else
 	{
-		Health = newHealth;
+		Health = NewHealth;
 		PrintHealth(FString::Printf(TEXT("Health is %f"), Health));
 	}
+}
+
+void ALearnUE5CppCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FHitResult HitResult;
+	const FVector StartVector = GetActorLocation();
+	const FVector EndVector = (GetActorForwardVector() * TraceDistance) + StartVector;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, StartVector, EndVector, ECC_Camera, CollisionQueryParams);
+
+	const FString HitActorName = HitResult.GetActor() ? HitResult.GetActor()->GetName() : TEXT("none");
+	GEngine->AddOnScreenDebugMessage(1, 10.0f, FColor::Green,
+	                                 FString::Printf(TEXT("Hit Actor: %s"), *HitActorName));
 }
