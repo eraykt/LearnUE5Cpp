@@ -44,11 +44,14 @@ ALearnUE5CppCharacter::ALearnUE5CppCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	Health = 100.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -71,20 +74,6 @@ void ALearnUE5CppCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &ALearnUE5CppCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &ALearnUE5CppCharacter::LookUpAtRate);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ALearnUE5CppCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ALearnUE5CppCharacter::TouchStopped);
-}
-
-void ALearnUE5CppCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	Jump();
-}
-
-void ALearnUE5CppCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	StopJumping();
 }
 
 void ALearnUE5CppCharacter::TurnAtRate(float Rate)
@@ -115,15 +104,38 @@ void ALearnUE5CppCharacter::MoveForward(float Value)
 
 void ALearnUE5CppCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void ALearnUE5CppCharacter::HandleHealth(float Value)
+{
+	float newHealth = Health + Value;
+
+	if (newHealth >= 100.0f)
+	{
+		Health = 100.0f;
+		GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green,TEXT("Health is full"));
+	}
+
+	else if (newHealth <= 0.0f)
+	{
+		Health = 0.0f;
+		PrintHealth("You died!");
+	}
+
+	else
+	{
+		Health = newHealth;
+		PrintHealth(FString::Printf(TEXT("Health is %f"), Health));
 	}
 }
