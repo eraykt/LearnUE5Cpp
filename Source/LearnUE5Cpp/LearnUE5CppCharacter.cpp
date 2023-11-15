@@ -7,6 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "DrawDebugHelpers.h"
+#include "MyActor.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ALearnUE5CppCharacter
@@ -144,10 +146,8 @@ void ALearnUE5CppCharacter::HandleHealth(const float Value)
 	}
 }
 
-void ALearnUE5CppCharacter::BeginPlay()
+void ALearnUE5CppCharacter::TraceLine()
 {
-	Super::BeginPlay();
-
 	FHitResult HitResult;
 	const FVector StartVector = GetActorLocation();
 	const FVector EndVector = (GetActorForwardVector() * TraceDistance) + StartVector;
@@ -158,4 +158,27 @@ void ALearnUE5CppCharacter::BeginPlay()
 	const FString HitActorName = HitResult.GetActor() ? HitResult.GetActor()->GetName() : TEXT("none");
 	GEngine->AddOnScreenDebugMessage(1, 10.0f, FColor::Green,
 	                                 FString::Printf(TEXT("Hit Actor: %s"), *HitActorName));
+
+	// Draw trace line
+	DrawDebugLine(GetWorld(), StartVector, EndVector, FColor::Purple, false, 2.0f);
+
+	if (!HitResult.GetActor()) return;
+
+	// Cast to MyActor
+	AMyActor* MyActor = Cast<AMyActor>(HitResult.GetActor());
+
+	if (!MyActor) return;
+	MyActor->SetHealth(-10.0f);
+	GEngine->AddOnScreenDebugMessage(2, 2.0f, FColor::Red, FString::Printf(TEXT("Health is %.2f"), MyActor->GetHealth()));
+}
+
+
+void ALearnUE5CppCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ALearnUE5CppCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 }

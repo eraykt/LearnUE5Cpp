@@ -57,19 +57,20 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	// Health
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
-
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void HandleHealth(float Value);
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
 	void PrintHealth(const FString& Message);
 
 	// Trace
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace")
 	float TraceDistance;
+	UFUNCTION(BlueprintCallable)
+	void TraceLine();
 };
 
