@@ -18,6 +18,7 @@ class ALearnUE5CppCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
 public:
 	ALearnUE5CppCharacter();
 
@@ -26,7 +27,6 @@ public:
 	float TurnRateGamepad;
 
 protected:
-
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
@@ -66,6 +66,8 @@ public:
 	void HandleHealth(float Value);
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
 	void PrintHealth(const FString& Message);
+	FORCEINLINE float GetHealth() const { return Health; }
+
 
 	// Trace
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace")
@@ -73,4 +75,3 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TraceLine();
 };
-
