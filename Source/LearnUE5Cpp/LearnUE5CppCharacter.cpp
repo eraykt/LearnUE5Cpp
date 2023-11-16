@@ -172,6 +172,11 @@ void ALearnUE5CppCharacter::TraceLine()
 	GEngine->AddOnScreenDebugMessage(2, 2.0f, FColor::Red, FString::Printf(TEXT("Health is %.2f"), MyActor->GetHealth()));
 }
 
+void ALearnUE5CppCharacter::Interact()
+{
+	GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, TEXT("Interact"));
+}
+
 
 void ALearnUE5CppCharacter::BeginPlay()
 {

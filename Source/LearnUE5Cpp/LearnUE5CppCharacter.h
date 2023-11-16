@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InteractInterface.h"
 #include "GameFramework/Character.h"
 #include "LearnUE5CppCharacter.generated.h"
 
 UCLASS(config=Game)
-class ALearnUE5CppCharacter : public ACharacter
+class ALearnUE5CppCharacter : public ACharacter, public IInteractInterface
 {
 	GENERATED_BODY()
 
@@ -74,4 +75,6 @@ public:
 	float TraceDistance;
 	UFUNCTION(BlueprintCallable)
 	void TraceLine();
+
+	virtual void Interact() override;
 };

@@ -35,9 +35,13 @@ void ACollisionActor::BeginOverLap(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if (!OtherActor) return;
 
-	ALearnUE5CppCharacter* Player = Cast<ALearnUE5CppCharacter>(OtherActor);
-	if (!Player) return;
-	Player->HandleHealth(-Damage);
-	
-	Destroy();
+	// ALearnUE5CppCharacter* Player = Cast<ALearnUE5CppCharacter>(OtherActor);
+	// if (!Player) return;
+	// Player->HandleHealth(-Damage);
+
+	// Destroy();
+
+	IInteractInterface* Interact = Cast<IInteractInterface>(OtherActor);
+	if (!Interact) return;
+	Interact->Interact();
 }
