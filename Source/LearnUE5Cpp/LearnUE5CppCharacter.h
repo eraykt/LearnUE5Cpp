@@ -68,7 +68,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Health")
 	void PrintHealth(const FString& Message);
 	FORCEINLINE float GetHealth() const { return Health; }
-
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetHealthToWidget();
 
 	// Trace
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace")

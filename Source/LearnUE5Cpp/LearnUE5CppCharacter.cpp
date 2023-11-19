@@ -144,6 +144,8 @@ void ALearnUE5CppCharacter::HandleHealth(const float Value)
 		Health = NewHealth;
 		PrintHealth(FString::Printf(TEXT("Health is %f"), Health));
 	}
+
+	SetHealthToWidget();
 }
 
 void ALearnUE5CppCharacter::TraceLine()
