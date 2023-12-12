@@ -58,6 +58,9 @@ ALearnUE5CppCharacter::ALearnUE5CppCharacter()
 
 	// Trace
 	TraceDistance = 1000.0f;
+
+	// Timer
+	TimerDelay = 2.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -69,6 +72,7 @@ void ALearnUE5CppCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("TimerStop", IE_Pressed, this, &ALearnUE5CppCharacter::StartStopTimer);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ALearnUE5CppCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &ALearnUE5CppCharacter::MoveRight);
@@ -171,7 +175,8 @@ void ALearnUE5CppCharacter::TraceLine()
 
 	if (!MyActor) return;
 	MyActor->SetHealth(-10.0f);
-	GEngine->AddOnScreenDebugMessage(2, 2.0f, FColor::Red, FString::Printf(TEXT("Health is %.2f"), MyActor->GetHealth()));
+	GEngine->AddOnScreenDebugMessage(2, 2.0f, FColor::Red,
+	                                 FString::Printf(TEXT("Health is %.2f"), MyActor->GetHealth()));
 }
 
 void ALearnUE5CppCharacter::Interact()
@@ -179,13 +184,38 @@ void ALearnUE5CppCharacter::Interact()
 	GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, TEXT("Interact"));
 }
 
+void ALearnUE5CppCharacter::TriggerByTimer()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("TriggerByTimer"));
+}
+
+void ALearnUE5CppCharacter::StartStopTimer()
+{
+	if (GetWorldTimerManager().IsTimerActive(TimerHandle))
+	{
+		GetWorldTimerManager().PauseTimer(TimerHandle);
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Timer is paused"));
+	}
+
+	else
+	{
+		GetWorldTimerManager().UnPauseTimer(TimerHandle);
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, TEXT("Timer is unpaused"));
+	}
+}
 
 void ALearnUE5CppCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALearnUE5CppCharacter::TriggerByTimer, TimerDelay, true);
+	StartStopTimer();
 }
 
 void ALearnUE5CppCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
+	 // GEngine->AddOnScreenDebugMessage(2, 1.0f, FColor::Green,
+	 //                                  FString::Printf(TEXT("%f"), GetWorldTimerManager().GetTimerElapsed(TimerHandle)));
 }

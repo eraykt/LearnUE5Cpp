@@ -78,4 +78,13 @@ public:
 	void TraceLine();
 
 	virtual void Interact() override;
+
+	// Timer
+	UPROPERTY(EditDefaultsOnly, Category = "Timer")
+	float TimerDelay;
+	void TriggerByTimer();
+	FTimerHandle TimerHandle;
+	void StartStopTimer();
+	
+	
 };
