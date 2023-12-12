@@ -86,5 +86,8 @@ public:
 	FTimerHandle TimerHandle;
 	void StartStopTimer();
 	
+	// Spawn
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> SpawnClass;
 	
 };

@@ -210,12 +210,22 @@ void ALearnUE5CppCharacter::BeginPlay()
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALearnUE5CppCharacter::TriggerByTimer, TimerDelay, true);
 	StartStopTimer();
+
+	// FVector const SpawnLocation = FVector(679.808309, 1715.625946, 52.043312);
+	FVector const SpawnLocation = GetActorLocation() + GetActorUpVector() * 100.0f;
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(SpawnClass, SpawnLocation, FRotator(0), SpawnInfo);
+
+	FString const ActorName = SpawnedActor ? SpawnedActor->GetName() : TEXT("none");
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple,
+	                                 FString::Printf(TEXT("Actor name: %s"), *ActorName));
 }
 
 void ALearnUE5CppCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	 // GEngine->AddOnScreenDebugMessage(2, 1.0f, FColor::Green,
-	 //                                  FString::Printf(TEXT("%f"), GetWorldTimerManager().GetTimerElapsed(TimerHandle)));
+
+	// GEngine->AddOnScreenDebugMessage(2, 1.0f, FColor::Green,
+	//                                  FString::Printf(TEXT("%f"), GetWorldTimerManager().GetTimerElapsed(TimerHandle)));
 }
